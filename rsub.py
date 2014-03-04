@@ -115,8 +115,17 @@ class Session:
         if (open_in_new_window) or (len(sublime.windows()) == 0):
             sublime.run_command("new_window")
 
+        # open file at provided line number if specified
+        try:
+           lineno = int(self.env.get('selection', -1))
+        except ValueError:
+           lineno = -1
+
         # Open it within sublime
-        view = sublime.active_window().open_file(self.temp_path)
+        if lineno != -1:
+            view = sublime.active_window().open_file(self.temp_path + ':%d' % lineno, sublime.ENCODED_POSITION)
+        else:
+            view = sublime.active_window().open_file(self.temp_path)
         SESSIONS[view.id()] = self
 
         # Bring sublime to front
