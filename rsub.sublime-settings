@@ -13,5 +13,7 @@
         WARNING: it's NOT recommended to change this option,
         use SSH tunneling instead.
     */
-    "host": "localhost"
+    "host": "localhost",
+
+    "open_in_new_window": true
 }

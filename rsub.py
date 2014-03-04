@@ -85,6 +85,7 @@ class Session:
         self.socket.send(b"\n")
 
     def on_done(self):
+        global open_in_new_window
         # Create a secure temporary directory, both for privacy and to allow
         # multiple files with the same basename to be edited at once without
         # overwriting each other.
@@ -111,7 +112,7 @@ class Session:
             sublime.error_message('Failed to write to temp file! Error: %s' % str(e))
 
         # create new window if needed
-        if len(sublime.windows()) == 0:
+        if (open_in_new_window) or (len(sublime.windows()) == 0):
             sublime.run_command("new_window")
 
         # Open it within sublime
@@ -180,12 +181,13 @@ class RSubEventListener(sublime_plugin.EventListener):
 
 
 def plugin_loaded():
-    global SESSIONS, server
+    global SESSIONS, server, open_in_new_window
 
     # Load settings
     settings = sublime.load_settings("rsub.sublime-settings")
     port = settings.get("port", 52698)
     host = settings.get("host", "localhost")
+    open_in_new_window = settings.get("open_in_new_window", True)
 
     # Start server thread
     server = TCPServer((host, port), ConnectionHandler)
